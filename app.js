@@ -15,6 +15,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 router.use(require(__dirname + "/controllers/UserController"));
+router.use(require(__dirname + "/controllers/ProductController"));
 
 app.use('/api/v1', router);
 
