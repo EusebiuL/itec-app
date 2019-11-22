@@ -68,6 +68,21 @@ const ProductService = {
             console.log(error);
             res.status(400).send({message: error.message});
         }
+    },
+
+    delete: async(req, res) => {
+        try{
+
+            const toDelete = await Product.findById(mongoose.Types.ObjectId(req.params.id)).exec();
+            if(req.user._id != toDelete.seller){
+                return res.status(403).send({message: "You cannot delete another seller's product"});
+            }
+            await toDelete.remove();
+            res.status(200).send({"product": toDelete});
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: error.message});
+        }
     }
 }
 
