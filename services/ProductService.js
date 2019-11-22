@@ -45,7 +45,28 @@ const ProductService = {
 
         } catch(error){
             console.log(error);
-            res.status(400).send({message: 'error'});
+            res.status(400).send({message: error.message});
+        }
+    },
+
+    update: async (req, res) => {
+        try{
+            const prod = await Product.findOne({_id: req.params.id}).exec();
+            if(!prod){
+                return res.status(404).send({message: `Product with id ${req.params.id} was not found`});
+            }
+            if(req.user._id != prod.seller){
+                return res.status(403).send({message: "You cannot update another seller's product!"});
+            }
+            const namedProd = await Product.findOne({name: req.body.name}).lean().exec();
+            if(namedProd && namedProd._id !== prod._id){
+                return res.status(403).send({message: `There already is different product with name ${req.body.name}`});
+            }
+            await prod.update(req.body);
+            res.status(200).send({product: prod});
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: error.message});
         }
     }
 }
