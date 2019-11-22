@@ -29,7 +29,7 @@ const UserService = {
     
 },
 
-    register: async (req, res, next) => {
+    register: async (req, res) => {
         try{
 
             const user = await User.findOne({email: req.body.email});
@@ -67,9 +67,17 @@ const UserService = {
             console.log(error);
             res.status(400).send({message: 'error'});
         }
+    },
+
+    getUsers: async (req, res) => {
+        try{
+            const users = await User.find().lean().exec();
+            res.status(200).send({users});
+        } catch(error){
+            console.log(error);
+            res.status(400).send({message: 'error'});
+        }
     }
-
-
 
 }
 
