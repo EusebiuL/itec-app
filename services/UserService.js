@@ -71,9 +71,49 @@ const UserService = {
 
     getUsers: async (req, res) => {
         try{
+             
             const users = await User.find().lean().exec();
             res.status(200).send({users});
         } catch(error){
+            console.log(error);
+            res.status(400).send({message: 'error'});
+        }
+    },
+
+    getSellers: async (req, res) => {
+        try{
+
+            const sellers = await User.find({userType: "SELLER"}).lean().exec();
+            res.status(200).send({sellers});
+
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: 'error'});
+        }
+    },
+
+    getBuyers: async(req, res) => {
+
+        try{
+
+            const buyers = await User.find({userType: "BUYER"}).lean().exec();
+            res.status(200).send({buyers});
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: 'error'});
+        }
+    },
+
+    getById: async(req, res) => {
+        try{
+
+            const user = await User.findOne({_id: req.params.id}).lean().exec();
+            if(!user){
+                return res.status(404).send({message: "User not found"});
+            } else {
+                res.status(200).send({user: user});
+            }
+        }catch(error){
             console.log(error);
             res.status(400).send({message: 'error'});
         }
