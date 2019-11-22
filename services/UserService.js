@@ -49,7 +49,6 @@ const UserService = {
                     } else {
                         let toRegisterUser = new User(req.body);
                         toRegisterUser.password = hash;
-                        //let hashedUser = new User(password = hash);
                         toRegisterUser.save().then(toDb => {
                             return res.status(201).send({ 'user': toRegisterUser });
                             }).catch(err => {
@@ -59,7 +58,6 @@ const UserService = {
                     }
                   });
                 
-
             } else {
                 res.status(403).send({message: `There already is a user with email ${req.body.email}`});
             }
