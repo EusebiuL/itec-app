@@ -83,6 +83,23 @@ const ProductService = {
             console.log(error);
             res.status(400).send({message: error.message});
         }
+    },
+
+    getAll: async(req, res) => {
+
+        const page = req.query.page;
+        const size = req.query.size;
+        const seller = req.params.id;
+        
+        try{
+
+            const products = await Product.find({seller: seller}).skip(parseInt(page * size)).limit(parseInt(size)).lean().exec();
+            res.status(200).send({products});
+
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: error.message});
+        }
     }
 }
 
