@@ -70,9 +70,12 @@ const UserService = {
     },
 
     getUsers: async (req, res) => {
+        const page = req.query.page;
+        const size = req.query.size;
+
         try{
              
-            const users = await User.find().lean().exec();
+            const users = await User.find().skip(parseInt(page * size)).limit(parseInt(size)).lean().exec();
             res.status(200).send({users});
         } catch(error){
             console.log(error);
@@ -81,9 +84,13 @@ const UserService = {
     },
 
     getSellers: async (req, res) => {
+
+        const page = req.query.page;
+        const size = req.query.size;
+
         try{
 
-            const sellers = await User.find({userType: "SELLER"}).lean().exec();
+            const sellers = await User.find({userType: "SELLER"}).skip(parseInt(page * size)).limit(parseInt(size)).lean().exec();
             res.status(200).send({sellers});
 
         }catch(error){
@@ -94,9 +101,12 @@ const UserService = {
 
     getBuyers: async(req, res) => {
 
+        const page = req.query.page;
+        const size = req.query.size;
+
         try{
 
-            const buyers = await User.find({userType: "BUYER"}).lean().exec();
+            const buyers = await User.find({userType: "BUYER"}).skip(parseInt(page * size)).limit(parseInt(size)).lean().exec();
             res.status(200).send({buyers});
         }catch(error){
             console.log(error);
