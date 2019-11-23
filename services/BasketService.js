@@ -11,7 +11,7 @@ const BasketService = {
             if(!req.body.buyer){
                 return res.status(404).send({message: "There must be a buyer for basket"});
             }
-            const toUpdate = Basket.findOne({buyer: req.body.buyer});
+            const toUpdate = Basket.findOne({buyer: req.body.buyer, current: true});
             let basket     = await toUpdate.lean().exec(); 
             let prodList = [];
             products = req.body.prid;
@@ -20,7 +20,7 @@ const BasketService = {
                 prodList.push({produs: prod, amount: products[i].amount});
             }
             if(!basket){
-                let newBasket = new Basket(req.body);
+                let newBasket = new Basket({...req.body, current: true});
                 console.log(newBasket);
                 let sum = 0;
                 for (var i = 0; i < prodList.length; i++){

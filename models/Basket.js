@@ -13,6 +13,10 @@ const Basket = new mongoose.Schema({
     buyer: {
         type: String,
         required: true
+    },
+    current: {
+        type: Boolean,
+        required: true
     }
 }, {
     collection: 'baskets',
