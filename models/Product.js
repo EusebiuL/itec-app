@@ -26,8 +26,12 @@ const Product = new mongoose.Schema({
         type: Number,
         required: true
     },
-    availableKg: {
+    available: {
         type: Number,
+        required: true
+    },
+    quantityType:{
+        type: String,
         required: true
     },
     location: {

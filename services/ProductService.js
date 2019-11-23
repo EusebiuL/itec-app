@@ -30,6 +30,9 @@ const ProductService = {
             if(req.user._id != req.body.seller){
                 return res.status(403).send({message: "You cannot add a product to another seller!"});
             }
+            if(!req.body.quantityType || (req.body.quantityType !== "KG" && req.body.quantityType !== "BUC")){
+                return res.status(400).send({message: "Product must have a valid quantity type"});
+            }
 
             const prod = await Product.findOne({name: req.body.name}).lean().exec();
             if(prod && prod.seller === req.body.seller){
@@ -186,7 +189,7 @@ const ProductService = {
             if(!product){
                 return res.status(404).send({message: `Product with id ${req.body.product} was not found`});
             }
-            if(req.body.amount > product.availableKg){
+            if(req.body.amount > product.available){
                 return res.status(403).send({message: "You cannot buy more of a product than the seller has"});
             }
             if(!seller){
@@ -210,7 +213,7 @@ const ProductService = {
                       });
                     return res.status(400).send({message: err.message});
                   } else{
-                    await toUpdateProduct.update({availableKg: product.availableKg - parseInt(req.body.amount)});
+                    await toUpdateProduct.update({available: product.available - parseInt(req.body.amount)});
                     let mail = transporter.sendMail({
                         to: req.user.email,
                         subject: "Confirmare plata",
