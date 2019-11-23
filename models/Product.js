@@ -1,6 +1,5 @@
 
 const mongoose = require("mongoose");
-const mongooseFindAndFilter = require('mongoose-find-and-filter');
 
 const Product = new mongoose.Schema({
     name: {
