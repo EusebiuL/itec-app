@@ -201,7 +201,6 @@ const ProductService = {
                   description: `Charge for ${req.user.email} for product ${product.name} from seller ${seller.email}`,
                 },
                 async function(err, charge) {
-                  // asynchronously called
                   if(err){
                     console.log(err);
                     let mail = transporter.sendMail({
