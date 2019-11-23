@@ -204,6 +204,11 @@ const ProductService = {
                   // asynchronously called
                   if(err){
                     console.log(err);
+                    let mail = transporter.sendMail({
+                        to: req.user.email,
+                        subject: "Plata eronata",
+                        html: `<p>Plata produsului ${product.name} din partea vanzatorului ${seller.email} a esuat. Te rugam sa incerci din nou.</p>`,
+                      });
                     return res.status(400).send({message: err.message});
                   } else{
                     await toUpdateProduct.update({availableKg: product.availableKg - parseInt(req.body.amount)});
