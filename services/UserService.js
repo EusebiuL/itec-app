@@ -15,13 +15,17 @@ const UserService = {
             bcrypt.compare(req.body.password, user.password, async function(err, result){
                 if(result === true){
                     const authToken = uuidv4.uuid();
+
                     await user.updateOne({token: authToken});
                     const updated = await User.findOne({email: user.email});
+
                     res.send({updated, authToken});
                 } else {
                     res.status(403).json({message: 'Wrong email or password'});
                 }
             })
+        } else {
+            res.status(404).send({message: `User with email ${req.body.email} does not exist`});
         }
     } catch (error) {
         console.log(error);
@@ -44,7 +48,7 @@ const UserService = {
                 
                 
                 bcrypt.hash(req.body.password, salt, function(err, hash) {
-                    // Store hash in your password DB.
+
                     if(err){
                         return res.status(400).send({message: "Error when creating user"});
                     } else {

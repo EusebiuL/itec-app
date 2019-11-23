@@ -1,6 +1,5 @@
 
 const mongoose = require("mongoose");
-const mongooseFindAndFilter = require('mongoose-find-and-filter');
 
 const Product = new mongoose.Schema({
     name: {
@@ -26,8 +25,12 @@ const Product = new mongoose.Schema({
         type: Number,
         required: true
     },
-    availableKg: {
+    available: {
         type: Number,
+        required: true
+    },
+    quantityType:{
+        type: String,
         required: true
     },
     location: {
