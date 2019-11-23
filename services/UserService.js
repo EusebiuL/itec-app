@@ -4,6 +4,7 @@ const uuidv4 = require('uuidv4');
 const User = require("../models/User");
 const bcrypt = require('bcrypt');
 const salt = 10;
+const transporter = require("./EmailService");
 
 const UserService = {
 
@@ -50,6 +51,11 @@ const UserService = {
                         let toRegisterUser = new User(req.body);
                         toRegisterUser.password = hash;
                         toRegisterUser.save().then(toDb => {
+                            let mail = transporter.sendMail({
+                                to: req.body.email,
+                                subject: "Platforma Fresh Market",
+                                html: `<p>Bun venit pe platforma Fresh Market, ${req.body.name}</p>`,
+                              });
                             return res.status(201).send({ 'user': toRegisterUser });
                             }).catch(err => {
                             console.log(err);
