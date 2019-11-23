@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("../models/User");
 const Product = require("../models/Product");
+let stripe = require('stripe')('sk_test_AHvs5CyJ8YL7E2rHcVrRoOmb00LLHlRzBP');
 
 const ProductService = {
 
@@ -167,6 +168,48 @@ const ProductService = {
 
         const prods = await search.exec();
         res.status(200).send({prods})
+
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: error.message});
+        }
+    },
+
+    buyProduct: async(req, res) => {
+        try{
+
+            let toUpdateProduct = Product.findById(mongoose.Types.ObjectId(req.body.product));
+            let product = await toUpdateProduct.lean().exec();
+            let seller  = await User.findById(mongoose.Types.ObjectId(req.body.seller)).lean().exec();
+
+            if(!product){
+                return res.status(404).send({message: `Product with id ${req.body.product} was not found`});
+            }
+            if(req.body.amount > product.availableKg){
+                return res.status(403).send({message: "You cannot buy more of a product than the seller has"});
+            }
+            if(!seller){
+                return res.status(404).send({message: `Seller with id ${req.body.seller} was not found`});
+            }
+
+            stripe.charges.create(
+                {
+                  amount: parseInt(req.body.amount) * parseInt(product.price) * 100,
+                  currency: 'GBP',
+                  source: req.body.source,
+                  description: `Charge for ${req.user.email} for product ${product.name} from seller ${seller.email}`,
+                },
+                async function(err, charge) {
+                  // asynchronously called
+                  if(err){
+                    console.log(err);
+                    return res.status(400).send({message: err.message});
+                  } else{
+                    await toUpdateProduct.update({availableKg: product.availableKg - parseInt(req.body.amount)});
+                    res.status(201).send({'charge': charge});
+                  }
+                }
+              );
 
         }catch(error){
             console.log(error);

@@ -9,4 +9,6 @@ router.post("/product", middleware, productService.add);
 router.put("/product/:id/update", middleware, productService.update);
 router.delete("/product/:id", middleware, productService.delete);
 
+router.post("/product/buy", middleware, productService.buyProduct);
+
 module.exports = router;

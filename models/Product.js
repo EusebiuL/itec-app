@@ -39,6 +39,4 @@ const Product = new mongoose.Schema({
     versionKey: false
 });
 
-Product.plugin(mongooseFindAndFilter);
-
 module.exports = mongoose.model("Product", Product);

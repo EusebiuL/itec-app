@@ -20,6 +20,7 @@
     "mongoose": "^5.7.12",
     "mongoose-find-and-filter": "^1.0.0",
     "passport": "^0.4.0",
+    "stripe": "^7.13.1",
     "tern": "^0.24.2",
     "uuidv4": "^6.0.0"
   }
