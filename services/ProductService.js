@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const User = require("../models/User");
 const Product = require("../models/Product");
 let stripe = require('stripe')('sk_test_AHvs5CyJ8YL7E2rHcVrRoOmb00LLHlRzBP');
+const transporter = require("./EmailService");
 
 const ProductService = {
 
@@ -206,6 +207,11 @@ const ProductService = {
                     return res.status(400).send({message: err.message});
                   } else{
                     await toUpdateProduct.update({availableKg: product.availableKg - parseInt(req.body.amount)});
+                    let mail = transporter.sendMail({
+                        to: req.user.email,
+                        subject: "Confirmare plata",
+                        html: `<p>Plata produsului ${product.name} din partea vanzatorului ${seller.email} a fost acceptata.</p>`,
+                      });
                     res.status(201).send({'charge': charge});
                   }
                 }
