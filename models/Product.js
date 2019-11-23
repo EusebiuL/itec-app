@@ -1,5 +1,6 @@
 
 const mongoose = require("mongoose");
+const mongooseFindAndFilter = require('mongoose-find-and-filter');
 
 const Product = new mongoose.Schema({
     name: {
@@ -37,5 +38,7 @@ const Product = new mongoose.Schema({
     collection: 'products',
     versionKey: false
 });
+
+Product.plugin(mongooseFindAndFilter);
 
 module.exports = mongoose.model("Product", Product);
