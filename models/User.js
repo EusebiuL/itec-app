@@ -29,6 +29,10 @@ const User = new mongoose.Schema({
     },
     image: {
         type: String
+    },
+    phone: {
+        type: String,
+        required: true
     }
 }, {
     collection: 'users',

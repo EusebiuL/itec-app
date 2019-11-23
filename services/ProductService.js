@@ -187,7 +187,8 @@ const ProductService = {
             let product = await toUpdateProduct.lean().exec();
             let seller  = await User.findById(mongoose.Types.ObjectId(req.body.seller)).lean().exec();
 
-            let basket = await Basket.findOne({buyer: req.user._id}).lean().exec();
+            let basketToUpdate =  Basket.findOne({buyer: req.user._id});
+            let basket = await basketToUpdate.lean().exec();
             for (var i = 0; i < basket.products.length; i++){
                 let prod = await Product.findById(mongoose.Types.ObjectId(basket.products[i].produs._id)).lean().exec();
                 if(prod.available < basket.products[i].amount){
@@ -224,6 +225,7 @@ const ProductService = {
                         const prod     = await toUpdate.lean().exec();
                         await toUpdate.update({available: prod.available - parseInt(basket.products[i].amount)});
                     }
+                    await basketToUpdate.remove();
                     let mail = transporter.sendMail({
                         to: req.user.email,
                         subject: "Confirmare plata",
