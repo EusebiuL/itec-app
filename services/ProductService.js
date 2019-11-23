@@ -3,6 +3,7 @@ const User = require("../models/User");
 const Product = require("../models/Product");
 let stripe = require('stripe')('sk_test_AHvs5CyJ8YL7E2rHcVrRoOmb00LLHlRzBP');
 const transporter = require("./EmailService");
+const Basket = require("../models/Basket");
 
 const ProductService = {
 
@@ -186,11 +187,16 @@ const ProductService = {
             let product = await toUpdateProduct.lean().exec();
             let seller  = await User.findById(mongoose.Types.ObjectId(req.body.seller)).lean().exec();
 
+            let basket = await Basket.findOne({buyer: req.user._id}).lean().exec();
+            for (var i = 0; i < basket.products.length; i++){
+                let prod = await Product.findById(mongoose.Types.ObjectId(basket.products[i].produs._id)).lean().exec();
+                if(prod.available < basket.products[i].amount){
+                    return res.status(403).send({message: "You cannot buy more of a product than the seller has"});
+                }
+            }
+
             if(!product){
                 return res.status(404).send({message: `Product with id ${req.body.product} was not found`});
-            }
-            if(req.body.amount > product.available){
-                return res.status(403).send({message: "You cannot buy more of a product than the seller has"});
             }
             if(!seller){
                 return res.status(404).send({message: `Seller with id ${req.body.seller} was not found`});
@@ -198,7 +204,7 @@ const ProductService = {
 
             stripe.charges.create(
                 {
-                  amount: parseInt(req.body.amount) * parseInt(product.price) * 100,
+                  amount: parseInt(basket.total)  * 100,
                   currency: 'GBP',
                   source: req.body.source,
                   description: `Charge for ${req.user.email} for product ${product.name} from seller ${seller.email}`,
@@ -209,15 +215,19 @@ const ProductService = {
                     let mail = transporter.sendMail({
                         to: req.user.email,
                         subject: "Plata eronata",
-                        html: `<p>Plata produsului ${product.name} din partea vanzatorului ${seller.email} a esuat. Te rugam sa incerci din nou.</p>`,
+                        html: `<p>Plata produselor din partea vanzatorului ${seller.email} a esuat. Te rugam sa incerci din nou.</p>`,
                       });
                     return res.status(400).send({message: err.message});
                   } else{
-                    await toUpdateProduct.update({available: product.available - parseInt(req.body.amount)});
+                    for (var i = 0; i < basket.products.length; i++){
+                        const toUpdate =  Product.findById(mongoose.Types.ObjectId(basket.products[i].produs._id));
+                        const prod     = await toUpdate.lean().exec();
+                        await toUpdate.update({available: prod.available - parseInt(basket.products[i].amount)});
+                    }
                     let mail = transporter.sendMail({
                         to: req.user.email,
                         subject: "Confirmare plata",
-                        html: `<p>Plata produsului ${product.name} din partea vanzatorului ${seller.email} a fost acceptata.</p>`,
+                        html: `<p>Plata produselor din partea vanzatorului ${seller.email} a fost acceptata.</p>`,
                       });
                     res.status(201).send({'charge': charge});
                   }
