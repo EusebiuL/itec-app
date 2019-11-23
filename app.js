@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 
 router.use(require(__dirname + "/controllers/UserController"));
 router.use(require(__dirname + "/controllers/ProductController"));
+router.use(require(__dirname + "/controllers/ResourceController"));
 
 app.use('/api/v1', router);
 

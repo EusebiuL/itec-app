@@ -33,6 +33,9 @@ const Product = new mongoose.Schema({
     location: {
         type: String,
         required: true
+    },
+    image: {
+        type: String
     }
 }, {
     collection: 'products',

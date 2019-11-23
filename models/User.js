@@ -26,6 +26,9 @@ const User = new mongoose.Schema({
     },
     sellerType: {
         type: String
+    },
+    image: {
+        type: String
     }
 }, {
     collection: 'users',
