@@ -8,5 +8,6 @@ router.get("/users", userService.getUsers);
 router.get("/buyers", userService.getBuyers);
 router.get("/sellers", userService.getSellers);
 router.get("/user/:id", userService.getById);
+router.delete("/user/logout", middleware, userService.logout);
 
 module.exports = router;

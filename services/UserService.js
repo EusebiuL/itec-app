@@ -137,6 +137,25 @@ const UserService = {
             console.log(error);
             res.status(400).send({message: 'error'});
         }
+    },
+
+    logout: async(req, res) => {
+        try{
+
+            const toUpdate = User.findById(mongoose.Types.ObjectId(req.user._id));
+            const user = await toUpdate.lean().exec();
+
+            if(!user){
+                return res.status(404).send({message: "User not found"});
+            } else {
+                await toUpdate.update({token: undefined});
+                res.status(200).send({});
+            }
+
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: 'error'});
+        }
     }
 
 }
