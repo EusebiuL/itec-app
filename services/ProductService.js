@@ -131,7 +131,7 @@ const ProductService = {
         if(queryParams['name']){
             // nameQuery.push({'name': {'$in': queryParams['name']}});
             // query['$and'].push({ nameQuery });
-            search = Product.find({name : { $regex: `^.*${queryParams['name']}.*$`, $options: 'i', $options: 'm' }});
+            search = Product.find({name : { $regex: `^.*${queryParams['name']}.*$`, $options: 'i' }});
             //search.where('name').in(queryParams['name']);
         } else {
             search = Product.find();
