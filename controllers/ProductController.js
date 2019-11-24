@@ -22,4 +22,9 @@ router.post("/product/buy", middleware, productService.buyProduct);
 //order -- related
 router.get("/history/:id", basketService.getOrderHistory);
 
+//wishlist -- related
+router.put("/wishlist/product/:id", productService.updateWishlist);
+router.get("/wishlist/:id", productService.getWishlist);
+router.delete("/wishlist/product/:id", productService.removeFromWishlist);
+
 module.exports = router;
