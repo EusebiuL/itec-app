@@ -12,7 +12,7 @@ Dispunem de urmatoarele feature-uri:
  - login (integrat cu FE)
  - logout
  - register (integrat cu FE)
- - listare produse
+ - listare produse (intgrat cu FE)
  - cautare dupa nume produs; filtrari dupa vanzator, price range, locatie, categorie si subcategorie -- acestea fiind paginate
  - detalii vanzator (integrat cu FE)
  - detalii produs (integrat cu FE -- requesturi paginate)
