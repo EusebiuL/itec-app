@@ -26,6 +26,6 @@ Dispunem de urmatoarele feature-uri:
  De asemenea, ca un alt additional feature, avem si trimitere de mail, in cazul inregistrarii unui user, si in cazul platii (fie ca a esuat sau nu).
  La inregistrare, se hashuie parolele folosind Bcrypt. De asemenea am folosit un middleware permite apelarea unor endpoint-uri doar in cazul in care userul este logat.
  De asemenea, este de notat ca imaginile se incarca in S3, printr-un request multipart/form-data. :)
- 
+ Also, backendul e plin de verificari, check them out ;)
  Documentatie frontend:
  Tehnologii folosite: React.js with TypeScript, Bootstrap, SCSS preprocessor, SCSS modules, Font Awesome, voie buna. :)
