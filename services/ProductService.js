@@ -119,13 +119,16 @@ const ProductService = {
             '$and': []
         };
 
-        let search = Product.find();
+        let search; 
         let queryParams = req.query;
         let nameQuery = [];
         if(queryParams['name']){
             // nameQuery.push({'name': {'$in': queryParams['name']}});
             // query['$and'].push({ nameQuery });
-            search.where('name').in(queryParams['name']);
+            search = Product.find({name: new RegExp('%'+queryParams['name']+'%', "i")});
+            //search.where('name').in(queryParams['name']);
+        } else {
+            search = Product.find();
         }
 
         console.log(queryParams);
@@ -166,6 +169,10 @@ const ProductService = {
             // query['$and'].push({ priceQuery });
             search.where('price').lt(queryParams['highPrice']).gt(queryParams['lowPrice']);
 
+        }
+
+        if(queryParams['page'] && queryParams['size']){
+            search.skip(parseInt(queryParams['page']) * parseInt(queryParams['size'])).limit(queryParams['size']);
         }
 
         
@@ -235,6 +242,44 @@ const ProductService = {
                   }
                 }
               );
+
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: error.message});
+        }
+    },
+
+    updateWishlist: async(req, res) => {
+        try{
+
+            const buyerId = req.params.id;
+            const toUpdate = Wishlist.findOne({buyer: id});
+            const wishlist = await toUpdate.lean().exec();
+            if(!wishlist){
+                let wsh = new Wishlist(req.body.product, id);
+                wsh.save().then(toDb => {
+                    res.status(201).send({message: "Item saved to wishlist"});
+                }).catch(err => {
+                    console.log(err);
+                    res.status(400).send({message: "Unable to add item to wishlist"});
+                });
+            } else{
+                wishlist.products.push(req.body.product);
+                await toUpdate.update({products: wishlist.products});
+                res.status(200).send({message: "Item added to wishlist successfully"});
+            }
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: error.message});
+        }
+    },
+
+    getWishlist: async(req, res) => {
+        try{
+
+            const buyerId = req.params.id;
+
+
 
         }catch(error){
             console.log(error);
