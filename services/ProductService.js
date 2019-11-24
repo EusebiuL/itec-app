@@ -278,9 +278,40 @@ const ProductService = {
         try{
 
             const buyerId = req.params.id;
+            const wishlist = await Wishlist.findOne({buyer: buyerId}).lean().exec();
+            if(!wishlist){
+                return res.status(404).send({message: `Wishlist for buyer ${buyerId} was not found`});
+            }
+            var prodList = [];
+            for(var i = 0; i < wishlist.products.length; i++){
+                let prod = await Product.findById(mongoose.Types.ObjectId(wishlist.products[i])).lean().exec();
+                prodList.push(prod);
+            }
 
+            res.status(200).send({list: prodList, buyer: buyerId});
 
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: error.message});
+        }
+    },
 
+    removeFromWishlist: async(req, res) => {
+        try{
+            const wshId = req.params.id;
+            const toUpdate = Wishlist.findById(mongoose.Types.ObjectId(wshId));
+            const wishlist = await toUpdate.lean().exec();
+
+            if(!wishlist){
+                return res.status(404).send({message: `Wishlist with id ${wshId} was not found`});
+            }
+            const index = wishlist.products.indexOf(req.body.product);
+            if(index > -1){
+                wishlist.products.splice(index, 1);
+                await toUpdate.update({products: wishlist.products});
+                res.status(200).send({newWishlist: wishlist});
+            }
+            res.status(200).send({});
         }catch(error){
             console.log(error);
             res.status(400).send({message: error.message});
