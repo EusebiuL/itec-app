@@ -23,8 +23,8 @@ router.post("/product/buy", middleware, productService.buyProduct);
 router.get("/history/:id", basketService.getOrderHistory);
 
 //wishlist -- related
-router.put("/wishlist/product/:id", productService.updateWishlist);
+router.put("/wishlist/buyer/:id", productService.updateWishlist);
 router.get("/wishlist/:id", productService.getWishlist);
-router.delete("/wishlist/product/:id", productService.removeFromWishlist);
+router.delete("/wishlist/:id", productService.removeFromWishlist);
 
 module.exports = router;

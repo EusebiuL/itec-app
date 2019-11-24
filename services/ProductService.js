@@ -4,6 +4,7 @@ const Product = require("../models/Product");
 let stripe = require('stripe')('sk_test_AHvs5CyJ8YL7E2rHcVrRoOmb00LLHlRzBP');
 const transporter = require("./EmailService");
 const Basket = require("../models/Basket");
+const Wishlist = require("../models/Wishlist");
 
 const ProductService = {
 
@@ -125,11 +126,12 @@ const ProductService = {
         if(queryParams['name']){
             // nameQuery.push({'name': {'$in': queryParams['name']}});
             // query['$and'].push({ nameQuery });
-            search = Product.find({name: new RegExp('%'+queryParams['name']+'%', "i")});
+            search = Product.find({name : { $regex: `^.*${queryParams['name']}.*$`, $options: 'i', $options: 'm' }});
             //search.where('name').in(queryParams['name']);
         } else {
             search = Product.find();
         }
+
 
         console.log(queryParams);
         let categoryQuery = [];
@@ -172,14 +174,14 @@ const ProductService = {
         }
 
         if(queryParams['page'] && queryParams['size']){
-            search.skip(parseInt(queryParams['page']) * parseInt(queryParams['size'])).limit(queryParams['size']);
+            search.skip(parseInt(queryParams['page']) * parseInt(queryParams['size'])).limit(parseInt(queryParams['size']));
         }
 
         
         console.log(query);
 
         const prods = await search.exec();
-        res.status(200).send({prods})
+        res.status(200).send({prods});
 
         }catch(error){
             console.log(error);
@@ -253,10 +255,12 @@ const ProductService = {
         try{
 
             const buyerId = req.params.id;
-            const toUpdate = Wishlist.findOne({buyer: id});
+            const toUpdate = Wishlist.findOne({buyer: buyerId});
             const wishlist = await toUpdate.lean().exec();
+            console.log(req.body.product);
             if(!wishlist){
-                let wsh = new Wishlist(req.body.product, id);
+                let wsh = new Wishlist({products: req.body, buyer: buyerId});
+                console.log(wsh);
                 wsh.save().then(toDb => {
                     res.status(201).send({message: "Item saved to wishlist"});
                 }).catch(err => {
@@ -278,13 +282,15 @@ const ProductService = {
         try{
 
             const buyerId = req.params.id;
+
             const wishlist = await Wishlist.findOne({buyer: buyerId}).lean().exec();
             if(!wishlist){
                 return res.status(404).send({message: `Wishlist for buyer ${buyerId} was not found`});
             }
             var prodList = [];
             for(var i = 0; i < wishlist.products.length; i++){
-                let prod = await Product.findById(mongoose.Types.ObjectId(wishlist.products[i])).lean().exec();
+                console.log(wishlist.products[i].product);
+                let prod = await Product.findById(mongoose.Types.ObjectId(wishlist.products[i].product)).lean().exec();
                 prodList.push(prod);
             }
 
@@ -305,11 +311,12 @@ const ProductService = {
             if(!wishlist){
                 return res.status(404).send({message: `Wishlist with id ${wshId} was not found`});
             }
-            const index = wishlist.products.indexOf(req.body.product);
-            if(index > -1){
-                wishlist.products.splice(index, 1);
-                await toUpdate.update({products: wishlist.products});
-                res.status(200).send({newWishlist: wishlist});
+            for(var i = 0; i < wishlist.products.length; i++){
+                if(wishlist.products[i].product == req.body.product){
+                    wishlist.products.splice(i, 1);
+                    await toUpdate.update({products: wishlist.products});
+                    return res.status(200).send({newWishlist: wishlist});
+                }
             }
             res.status(200).send({});
         }catch(error){
