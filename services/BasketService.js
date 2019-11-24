@@ -68,13 +68,27 @@ const BasketService = {
     getByBuyer: async(req, res) => {
         try{
 
-            const basket = await Basket.find({buyer: req.params.id}).lean().exec();
+            const basket = await Basket.find({buyer: req.params.id, current: true}).lean().exec();
             if(!basket){
                 return res.status(404).send({message: `Basket for buyer ${req.params.id} was not found`});
             } else {
                 res.status(200).send({basket});
             }
 
+        }catch(error){
+            console.log(error);
+            res.status(400).send({message: error.message});
+        }
+    },
+
+    getOrderHistory: async(req, res) => {
+        try{
+            const user    = await User.findById(mongoose.Types.ObjectId(req.params.id)).lean().exec();
+            if(!user){
+                return res.status(404).send({message: `Order history for ${req.params.id} was not found`});
+            }
+            const history = await Basket.find({buyer: req.params.id, current:false}).sort({updatedAt: -1}).lean().exec();
+            res.status(200).send({order: history});
         }catch(error){
             console.log(error);
             res.status(400).send({message: error.message});

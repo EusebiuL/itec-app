@@ -19,4 +19,7 @@ router.put("/basket", basketService.updateBasket);
 // payment -- checkout
 router.post("/product/buy", middleware, productService.buyProduct);
 
+//order -- related
+router.get("/history/:id", basketService.getOrderHistory);
+
 module.exports = router;

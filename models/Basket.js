@@ -17,10 +17,17 @@ const Basket = new mongoose.Schema({
     current: {
         type: Boolean,
         required: true
+    },
+    createdAt: {
+        type: Date
+    },
+    updatedAt: {
+        type: Date
     }
 }, {
     collection: 'baskets',
-    versionKey: false
+    versionKey: false,
+    timestamps: true
 });
 
 module.exports = mongoose.model("Basket", Basket);

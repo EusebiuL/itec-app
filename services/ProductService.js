@@ -225,7 +225,7 @@ const ProductService = {
                         const prod     = await toUpdate.lean().exec();
                         await toUpdate.update({available: prod.available - parseInt(basket.products[i].amount)});
                     }
-                    await basketToUpdate.update({current: false});
+                    await basketToUpdate.update({current: false, boughtAt: new Date()});
                     let mail = transporter.sendMail({
                         to: req.user.email,
                         subject: "Confirmare plata",
