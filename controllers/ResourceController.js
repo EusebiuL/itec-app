@@ -8,8 +8,8 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage : storage}).any();
 
-router.post("/resource/product/:id", middleware, upload, resourceService.uploadProductResource);
-router.post("/resource/user/:id", middleware, upload, resourceService.uploadUserResource);
+router.post("/resource/product/:id", upload, resourceService.uploadProductResource);
+router.post("/resource/user/:id", upload, resourceService.uploadUserResource);
 
 
 module.exports = router;
