@@ -25,6 +25,7 @@ Dispunem de urmatoarele feature-uri:
  Pentru upload de fisiere, am folosit un storage service, si anume Amazon S3.
  De asemenea, ca un alt additional feature, avem si trimitere de mail, in cazul inregistrarii unui user, si in cazul platii (fie ca a esuat sau nu).
  La inregistrare, se hashuie parolele folosind Bcrypt. De asemenea am folosit un middleware permite apelarea unor endpoint-uri doar in cazul in care userul este logat.
+ De asemenea, este de notat ca imaginile se incarca in S3, printr-un request multipart/form-data. :)
  
  Documentatie frontend:
  Tehnologii folosite: React.js with TypeScript, Bootstrap, SCSS preprocessor, SCSS modules, Font Awesome, voie buna. :)
