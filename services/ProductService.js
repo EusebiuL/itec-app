@@ -96,12 +96,17 @@ const ProductService = {
 
         const page = req.query.page;
         const size = req.query.size;
-        const seller = req.params.id;
-
+        const sel  = req.query.seller;
+        const buy  = req.query.buyer; 
 
         try{
-
-           const products = await Product.find({seller: seller}).skip(parseInt(page * size)).limit(parseInt(size)).lean().exec();
+           let query;
+        if(sel){
+            query = Product.find({seller: sel});
+        } else {
+            query = Product.find();
+        }
+           const products = await query.skip(parseInt(page * size)).limit(parseInt(size)).lean().exec();
            res.status(200).send({products});
         }catch(error){
             console.log(error);

@@ -5,7 +5,7 @@ const basketService = require("../services/BasketService");
 
 //product-related endpoints
 router.get("/product/:id", productService.getById);
-router.get("/products/:id", productService.getAll);
+router.get("/products", productService.getAll);
 router.get("/prod/search", productService.search);
 router.post("/product", middleware, productService.add);
 router.put("/product/:id/update", middleware, productService.update);
