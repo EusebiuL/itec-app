@@ -28,5 +28,8 @@
     "stripe": "^7.13.1",
     "tern": "^0.24.2",
     "uuidv4": "^6.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.19.1"
   }
 }

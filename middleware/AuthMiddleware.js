@@ -11,6 +11,7 @@ const AuthenticationMiddleware = async (req, res, next) => {
         next();
     } else {
         res.status(403).json({ message: "Wrong authentication token" });
+        next();
     }
 }
 
