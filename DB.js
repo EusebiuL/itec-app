@@ -6,7 +6,7 @@ const {
     MONGO_DB
   } = process.env;
 
-const url = `mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
+const url = `mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}`;
 
 const options = {
     useNewUrlParser: true,
@@ -20,7 +20,3 @@ mongoose.connect(url, options).then(
     err => { console.log('Can not connect to the database' + err) }
   );
 
-
-module.exports = {
-    DB: 'mongodb://localhost:27017/itec'
-}
