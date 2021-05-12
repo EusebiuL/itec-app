@@ -21,7 +21,7 @@
     "mongoose": "^5.7.12",
     "mongoose-find-and-filter": "^1.0.0",
     "multer": "^1.4.2",
-    "nodemailer": "^6.3.1",
+    "nodemailer": "^6.4.16",
     "nodemailer-smtp-transport": "^2.7.4",
     "passport": "^0.4.0",
     "s3-client": "^4.4.2",
